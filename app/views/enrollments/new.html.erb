@@ -5,7 +5,6 @@
 
     <%= f.hidden_field :student_id, value: @student.id %>
 
-    <!-- Select Course -->
     <div class="mb-4">
       <%= f.label :course_id, "Select Course", class: "block text-sm font-medium text-gray-700" %>
       <%= f.collection_select :course_id, @courses, :id, :name,
@@ -13,22 +12,20 @@
             class: "block w-full border-gray-300 rounded-md shadow-sm" %>
     </div>
 
-    <!-- Start Date -->
     <div class="mb-4">
-      <%= f.label :start_date, "Start Date" %>
-      <%= f.date_field :start_date,
-            class: "block w-full border-gray-300 rounded-md shadow-sm" %>
+      <%= f.label :start_date %>
+      <%= f.date_field :start_date, class: "block w-full border-gray-300 rounded-md shadow-sm" %>
     </div>
 
-    <!-- Status -->
-    <%= f.select :status,
-        [["Active", "Active"], ["Completed", "Completed"], ["Withdrawn", "Withdrawn"]],
-        {},
-        class: "block w-full rounded-md border-gray-300 shadow-sm" %>
-
-    <div class="mt-6">
-      <%= f.submit "Enrol Student",
-          class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500" %>
+    <div class="mb-4">
+      <%= f.label :status %>
+      <%= f.select :status,
+          [["Active","Active"],["Completed","Completed"],["Withdrawn","Withdrawn"]],
+          {},
+          class: "block w-full border-gray-300 rounded-md shadow-sm" %>
     </div>
+
+    <%= f.submit "Enrol Student",
+        class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500" %>
   <% end %>
 </div>

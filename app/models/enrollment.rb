@@ -7,10 +7,10 @@ class Enrollment < ApplicationRecord
   after_create :assign_course_modules
 
   def assign_course_modules
-    course.course_modules.each do |template|
+    course.course_modules.each do |cm|
       student_modules.create!(
-        course_module: template,
-        module_name: template.name,
+        course_module: cm,
+        module_name: cm.name,
         status: "SUBMITTED & NOT MARKED"
       )
     end

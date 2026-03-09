@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_133754) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_09_135836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,7 +50,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_133754) do
   end
 
   create_table "student_modules", force: :cascade do |t|
-    t.bigint "student_id", null: false
     t.string "module_name"
     t.string "status"
     t.text "notes"
@@ -60,14 +59,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_133754) do
     t.bigint "enrollment_id", null: false
     t.index ["course_module_id"], name: "index_student_modules_on_course_module_id"
     t.index ["enrollment_id"], name: "index_student_modules_on_enrollment_id"
-    t.index ["student_id"], name: "index_student_modules_on_student_id"
   end
 
   create_table "students", force: :cascade do |t|
     t.string "name"
-    t.string "course"
-    t.date "start_date"
-    t.date "end_date"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -82,5 +77,4 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_133754) do
   add_foreign_key "enrollments", "students"
   add_foreign_key "student_modules", "course_modules"
   add_foreign_key "student_modules", "enrollments"
-  add_foreign_key "student_modules", "students"
 end
