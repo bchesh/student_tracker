@@ -23,26 +23,33 @@
   </head>
 
   <body>
-  <nav class="bg-gray-900 text-white px-6 py-4 shadow-md">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <nav class="bg-gray-900 text-white px-6 py-4 shadow-md">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <!-- Left Side: Logo / App Name -->
-    <div class="text-xl font-semibold">
-      <%= link_to "Student Tracker", root_path, class: "hover:text-gray-300" %>
+        <!-- App Name -->
+        <div class="text-xl font-semibold">
+          <%= link_to "Student Tracker", root_path, class: "hover:text-gray-300" %>
+        </div>
+
+        <!-- Nav Links -->
+        <div class="flex space-x-6 text-sm">
+
+          <%= link_to "Students",
+                students_path,
+                class: "hover:text-gray-300" %>
+
+          <%= link_to "Courses",
+                courses_path,
+                class: "hover:text-gray-300" %>
+
+          <%= link_to "Course Modules",
+                course_modules_path,
+                class: "hover:text-gray-300" %>
+        </div>
+      </div>
+    </nav>
+    <div class="max-w-7xl mx-auto px-6 py-6">
+      <%= yield %>
     </div>
-
-    <!-- Right Side: Navigation Links -->
-    <div class="flex space-x-6 text-sm">
-      <%= link_to "Students", students_path, class: "hover:text-gray-300" %>
-      <%= link_to "Courses", courses_path, class: "hover:text-gray-300" %>
-      <%= link_to "Module Templates", course_module_templates_path, class: "hover:text-gray-300" %>
-      <%= link_to "Modules", student_modules_path, class: "hover:text-gray-300" %>
-    </div>
-
-  </div>
-</nav>
-<div class="max-w-7xl mx-auto px-6 py-6">
-  <%= yield %>
-</div>
   </body>
 </html>

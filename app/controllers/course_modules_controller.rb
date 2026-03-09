@@ -1,18 +1,15 @@
 class CourseModulesController < ApplicationController
-  before_action :set_course_module, only: %i[ show edit update destroy ]
+  before_action :set_course_module, only: %i[ edit update destroy ]
 
   # GET /course_modules or /course_modules.json
   def index
-    @course_modules = CourseModule.all
-  end
-
-  # GET /course_modules/1 or /course_modules/1.json
-  def show
+    @course_modules = CourseModule.includes(:course).order("courses.name ASC, course_modules.name ASC")
   end
 
   # GET /course_modules/new
   def new
     @course_module = CourseModule.new
+    @course_module.course_id = params[:course_id] if params[:course_id]
   end
 
   # GET /course_modules/1/edit
@@ -65,6 +62,6 @@ class CourseModulesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
   def course_module_params
-    params.require(:course_module).permit(:student_id, :module_name, :status, :notes)
+    params.require(:course_module).permit(:course_id, :name) # add :description if you have that column
   end
 end

@@ -1,4 +1,4 @@
-<%= form_with(model: course_module, class: "contents") do |form| %>
+<%= form_with(model: course_module, class: "space-y-6") do |form| %>
   <% if course_module.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
       <h2><%= pluralize(course_module.errors.count, "error") %> prohibited this course_module from being saved:</h2>
@@ -11,30 +11,39 @@
     </div>
   <% end %>
 
+  <% if Course.count == 0 %>
+    <div class="p-4 bg-yellow-100 border border-yellow-300 rounded text-yellow-800">
+      You must create a course before adding modules.
+    </div>
+
+    <%= link_to "Create a Course",
+          new_course_path,
+          class: "inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-500" %>
+
+    <% next %>
+  <% end %>
+
+  <!-- Attach to Course (required) -->
   <div class="my-5">
-    <%= form.label :student_id %>
-    <%= form.text_field :student_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": course_module.errors[:student_id].none?, "border-red-400 focus:outline-red-600": course_module.errors[:student_id].any?}] %>
+    <%= form.label :course_id, "Attach to Course", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.collection_select :course_id,
+          Course.order(:name),
+          :id, :name,
+          { prompt: "Select a course" },
+          class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": course_module.errors[:name].none?, "border-red-400 focus:outline-red-600": course_module.errors[:name].any?}],
+          required: true %>
+  </div>
+
+  <!-- Module Name (required) -->
+  <div class="my-5">
+    <%= form.label :modue_name %>
+    <%= form.text_field :name,
+          required: true,
+          class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": course_module.errors[:name].none?, "border-red-400 focus:outline-red-600": course_module.errors[:name].any?}] %>
   </div>
 
   <div class="my-5">
-    <%= form.label :module_name %>
-    <%= form.text_field :module_name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": course_module.errors[:module_name].none?, "border-red-400 focus:outline-red-600": course_module.errors[:module_name].any?}] %>
-  </div>
-
-  <div class="mb-4">
-    <%= form.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= form.select :status,
-          options_for_select(CourseModule::MODULE_STATUSES.map { |s| [s.titleize, s] }, selected: @course_module.status),
-          {},
-          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :notes %>
-    <%= form.textarea :notes, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": course_module.errors[:notes].none?, "border-red-400 focus:outline-red-600": course_module.errors[:notes].any?}] %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit "Save Module",
+      class: "inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-500" %>
   </div>
 <% end %>

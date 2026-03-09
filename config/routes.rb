@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  resources :student_modules
-  resources :course_module_templates
-  resources :courses
   resources :students
+  resources :courses
+  resources :course_modules      # ← ensure this is here
+  resources :student_modules
 
   root "students#index"
 

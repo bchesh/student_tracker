@@ -1,9 +1,10 @@
 class StudentModule < ApplicationRecord
   belongs_to :student
+  belongs_to :course_module, optional: true
 
   MODULE_STATUSES = [
     "PASSED",
-    "SUBMITTED & NOT MARKED",       # ← change from &amp; to &
+    "SUBMITTED & NOT MARKED",
     "CORRECTIONS SENT",
     "NO WORK / NOT COMPLETED",
     "AI DETECTED (SENT TO REDO)"

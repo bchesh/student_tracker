@@ -1,0 +1,38 @@
+<%# locals: course_module:, student_module: %>
+
+<%# Wrap each row in a Turbo Frame so only this row refreshes on update %>
+<%= turbo_frame_tag dom_id(student_module) do %>
+  <li class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900"><%= course_module.name %></h3>
+        <% if defined?(course_module.description) && course_module.description.present? %>
+          <p class="mt-1 text-sm text-gray-600"><%= course_module.description %></p>
+        <% end %>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <%= form_with model: student_module,
+                      url: student_module_path(student_module),
+                      method: :patch,
+                      data: { turbo: true },
+                      class: "flex items-center gap-2" do |f| %>
+
+          <%= f.label :status, "Status", class: "sr-only" %>
+          <%= f.select :status,
+                options_for_select(StudentModule::MODULE_STATUSES, student_module.status),
+                {},
+                class: "block w-64 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
+                onchange: "this.form.requestSubmit()" %>
+
+          <%# Optional: a save button if you don't want auto-submit on change %>
+          <%# <%= f.submit 'Update', class: 'hidden md:inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-500' %> %>
+        <% end %>
+      </div>
+    </div>
+
+    <% if student_module.notes.present? %>
+      <p class="mt-3 text-sm text-gray-600"><strong>Notes:</strong> <%= student_module.notes %></p>
+    <% end %>
+  </li>
+<% end %>
