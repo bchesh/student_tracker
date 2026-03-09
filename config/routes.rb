@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  resources :course_modules
+  resources :students
+  get "students/index"
+  get "students/show"
+  get "students/new"
+  get "students/edit"
+  root "students#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

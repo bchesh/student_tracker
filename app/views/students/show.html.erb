@@ -1,0 +1,15 @@
+<h2 class="text-xl font-bold mt-6">Modules</h2>
+
+<%= link_to "Add Module", new_course_module_path(student_id: @student.id), class: "text-blue-500 underline" %>
+
+<ul class="mt-4 space-y-2">
+  <% @student.course_modules.each do |mod| %>
+    <li class="p-4 bg-gray-100 rounded">
+      <strong><%= mod.module_name %></strong> — <%= mod.status %><br>
+      <em><%= mod.notes %></em><br>
+
+      <%= link_to "Edit", edit_course_module_path(mod), class: "text-blue-500" %> |
+      <%= link_to "Delete", mod, method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600" %>
+    </li>
+  <% end %>
+</ul>
