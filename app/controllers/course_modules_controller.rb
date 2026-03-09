@@ -64,7 +64,7 @@ class CourseModulesController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
-    def course_module_params
-      params.expect(course_module: [ :student_id, :module_name, :status, :notes ])
-    end
+  def course_module_params
+    params.require(:course_module).permit(:student_id, :module_name, :status, :notes)
+  end
 end

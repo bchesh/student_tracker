@@ -1,0 +1,2 @@
+module CourseModuleTemplatesHelper
+end

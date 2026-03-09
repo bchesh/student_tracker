@@ -1,15 +1,11 @@
-<% content_for :title, "Showing course module" %>
-
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Showing course module</h1>
-
-  <%= render @course_module %>
-
-  <%= link_to "Edit this course module", edit_course_module_path(@course_module), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to course modules", course_modules_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this course module", @course_module, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-</div>
+<li class="p-4 bg-gray-50 rounded">
+  <div class="flex items-center justify-between">
+    <strong><%= mod.module_name %></strong>
+    <%= module_status_badge(mod.status) %>
+  </div>
+  <p class="mt-1 text-sm text-gray-600"><%= mod.notes %></p>
+  <div class="mt-2 flex gap-3 text-sm">
+    <%= link_to "Edit", edit_course_module_path(mod), class: "text-blue-600 hover:underline" %>
+    <%= link_to "Delete", mod, data: { turbo_method: :delete, turbo_confirm: "Delete this module?" }, class: "text-red-600 hover:underline" %>
+  </div>
+</li>

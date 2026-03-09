@@ -1,5 +1,6 @@
 class StudentsController < ApplicationController
   before_action :set_student, only: %i[ show edit update destroy ]
+  before_action :set_courses, only: %i[new edit create update]
 
   # GET /students or /students.json
   def index
@@ -63,8 +64,12 @@ class StudentsController < ApplicationController
       @student = Student.find(params.expect(:id))
     end
 
+  def set_courses
+    @courses = Course.order(:name)
+  end
+
     # Only allow a list of trusted parameters through.
-    def student_params
-      params.expect(student: [ :name, :course, :start_date, :end_date, :notes ])
-    end
+  def student_params
+    params.require(:student).permit(:name, :course_id, :start_date, :end_date, :notes, :status)
+  end
 end

@@ -10,18 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_102548) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_09_113241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "course_module_templates", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.string "module_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_course_module_templates_on_course_id"
+  end
+
   create_table "course_modules", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "course_id", null: false
+    t.index ["course_id"], name: "index_course_modules_on_course_id"
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "student_modules", force: :cascade do |t|
     t.bigint "student_id", null: false
     t.string "module_name"
     t.string "status"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["student_id"], name: "index_course_modules_on_student_id"
+    t.index ["student_id"], name: "index_student_modules_on_student_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -32,7 +55,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_102548) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
+    t.bigint "course_id", null: false
+    t.index ["course_id"], name: "index_students_on_course_id"
   end
 
-  add_foreign_key "course_modules", "students"
+  add_foreign_key "course_module_templates", "courses"
+  add_foreign_key "course_modules", "courses"
+  add_foreign_key "student_modules", "students"
+  add_foreign_key "students", "courses"
 end

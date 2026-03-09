@@ -1,0 +1,51 @@
+<div class="mx-auto max-w-6xl px-4 py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-semibold text-gray-900">Courses</h1>
+
+    <%= link_to "New Course",
+      new_course_path,
+      class: "inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
+  </div>
+
+  <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Name</th>
+          <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Description</th>
+          <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Modules</th>
+          <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-600">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-100 bg-white">
+        <% @courses.each do |course| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 text-gray-800 font-medium">
+              <%= link_to course.name, course, class: "hover:underline" %>
+            </td>
+
+            <td class="px-4 py-3 text-gray-700">
+              <%= course.description.presence || "—" %>
+            </td>
+
+            <td class="px-4 py-3 text-gray-700">
+              <%= module_count_badge(course) %>
+            </td>
+
+            <td class="px-4 py-3">
+              <div class="flex justify-end gap-2">
+                <%= link_to "View", course, class: "inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+                <%= link_to "Edit", edit_course_path(course), class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-500" %>
+                <%= link_to "Delete",
+                      course,
+                      data: { turbo_method: :delete, turbo_confirm: "Delete this course?" },
+                      class: "inline-flex items-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
