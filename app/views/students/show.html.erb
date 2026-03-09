@@ -1,111 +1,119 @@
 <div class="mx-auto max-w-6xl px-4 py-8">
 
   <!-- Header -->
-  <div class="flex items-center justify-between mb-6">
+  <div class="flex items-center justify-between mb-8">
     <h1 class="text-3xl font-bold text-gray-900"><%= @student.name %></h1>
 
     <%= link_to "Edit Student",
-        edit_student_path(@student),
-        class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500" %>
+      edit_student_path(@student),
+      class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500" %>
+
+        <%= link_to "Enrol on a new course",
+    new_enrollment_path(student_id: @student.id),
+    class: "inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500" %>
   </div>
 
-      <!-- Key Info Grid -->
-      <dl class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+  <!-- ================= STUDENT INFO SECTION ================= -->
+  <h2 class="text-2xl font-semibold text-gray-900 mb-4">Student Information</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
 
-        <% if @student.start_date.present? %>
-          <div class="rounded-md bg-gray-50 p-4">
-            <dt class="text-xs uppercase tracking-wide text-gray-500">Start date</dt>
-            <dd class="mt-1 text-sm text-gray-800">
-              <%= @student.start_date.strftime("%d %b %Y") %>
-            </dd>
-          </div>
-        <% end %>
+    <% if @student.email.present? %>
+      <div class="rounded-md bg-gray-50 p-4">
+        <dt class="text-xs uppercase tracking-wide text-gray-500">Email</dt>
+        <dd class="mt-1 text-sm text-gray-800"><%= @student.email %></dd>
+      </div>
+    <% end %>
 
-        <% if @student.end_date.present? %>
-          <div class="rounded-md bg-gray-50 p-4">
-            <dt class="text-xs uppercase tracking-wide text-gray-500">End date</dt>
-            <dd class="mt-1 text-sm text-gray-800">
-              <%= @student.end_date.strftime("%d %b %Y") %>
-            </dd>
-          </div>
-        <% end %>
+    <% if @student.phone.present? %>
+      <div class="rounded-md bg-gray-50 p-4">
+        <dt class="text-xs uppercase tracking-wide text-gray-500">Phone</dt>
+        <dd class="mt-1 text-sm text-gray-800"><%= @student.phone %></dd>
+      </div>
+    <% end %>
 
-        <% if @student.status.present? %>
-          <div class="rounded-md bg-gray-50 p-4">
-            <dt class="text-xs uppercase tracking-wide text-gray-500">Status</dt>
-            <dd class="mt-1 text-sm text-gray-800">
-              <%= @student.status.capitalize %>
-            </dd>
-          </div>
-        <% end %>
+  </div>
 
+  <!-- ================= CURRENT COURSE SECTION ================= -->
+  <h2 class="text-2xl font-semibold text-gray-900 mb-4">Current Course</h2>
+  <% current = @student.enrollments.order(start_date: :desc).first %>
 
-        </dl>
-  <h2 class="text-2xl font-semibold text-gray-900 mb-4">Courses</h2>
+  <% if current.present? %>
+    <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm mb-10">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">Current Course</h2>
 
-  <!-- Course Section -->
-  <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm mb-10">
+      <h3 class="text-xl font-bold text-gray-900">
+        <%= link_to current.course.name, current.course, class: "hover:underline" %>
+      </h3>
 
-    <% if @student.course.present? %>
-      <div class="text-lg font-medium text-gray-900">
-        <%= link_to @student.course.name, @student.course, class: "hover:underline" %>
+      <p class="mt-1 text-gray-600">
+        <strong>Start:</strong> <%= current.start_date&.strftime("%d %b %Y") %><br>
+        <strong>End:</strong> <%= current.end_date&.strftime("%d %b %Y") %><br>
+        <strong>Status:</strong> <%= current.status || "Active" %>
+      </p>
+
+      <!-- COURSE PERCENTAGE -->
+      <% total = current.student_modules.count %>
+      <% completed = current.student_modules.where(status: "PASSED").count %>
+      <% percent = total > 0 ? (completed.to_f / total * 100).round : 0 %>
+
+      <div class="mt-4">
+        <p class="text-gray-700 font-medium">Course Progress: <%= percent %>%</p>
+        <div class="w-full bg-gray-200 h-3 rounded mt-1">
+          <div class="bg-green-500 h-3 rounded" style="width: <%= percent %>%"></div>
+        </div>
       </div>
 
-      <% if @student.course.description.present? %>
-        <p class="mt-2 text-gray-600"><%= @student.course.description %></p>
-      <% end %>
+      <!-- MODULES LIST -->
+      <h4 class="mt-6 text-xl font-semibold">Modules</h4>
 
-
-
-  <!-- Modules Section (paired with the course) -->
-    <div class="text-lg font-medium text-gray-900">
-      <h2 class="text-2xl font-semibold text-gray-900">Modules</h2>
-    </div>
-
-    <% if @student.course.present? %>
-      <% course = @student.course %>
-
-      <% if course.course_modules.any? %>
-        <ul class="space-y-4">
-          <% course.course_modules.order(:name).each do |cm| %>
-            <%# Find the student's module by matching name; ideally link by course_module_id in DB for robustness %>
-            <% sm = @student.student_modules.find_by(module_name: cm.name) %>
-
-            <% if sm.present? %>
-              <%= render "module_status_row", course_module: cm, student_module: sm %>
-            <% else %>
-              <%# Fallback if missing (e.g., student created before templates were set) %>
-              <li class="p-4 bg-amber-50 rounded-lg border border-amber-200">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h3 class="text-lg font-semibold text-amber-900"><%= cm.name %></h3>
-                    <p class="text-sm text-amber-800">No student module found for this template.</p>
-                  </div>
-
-                  <%= button_to "Create for Student",
-                        student_modules_path(student_module: { student_id: @student.id, module_name: cm.name, status: "SUBMITTED & NOT MARKED" }),
-                        method: :post,
-                        class: "inline-flex items-center rounded-md bg-amber-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-amber-500" %>
-                </div>
-              </li>
-            <% end %>
-
+      <% if current.student_modules.any? %>
+        <ul class="mt-4 space-y-4">
+          <% current.student_modules.includes(:course_module).each do |mod| %>
+            <%= render "module_status_row", course_module: mod.course_module, student_module: mod %>
           <% end %>
         </ul>
       <% else %>
-        <p class="text-gray-600">This course has no modules yet.</p>
+        <p class="text-gray-600 mt-2">No modules assigned for this course.</p>
       <% end %>
+    </div>
+  <% else %>
+    <p class="text-gray-600 mb-10">This student is not enrolled on any course.</p>
+  <% end %>
 
-    <% else %>
-      <p class="text-gray-600">No course assigned yet.</p>
-    <% end %>
-    <% else %>
-      <p class="text-gray-600">No course assigned yet.</p>
 
-      <%= link_to "Assign Course",
-          edit_student_path(@student),
-          class: "mt-2 inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-500" %>
+  <!-- ================= PAST COURSES SECTION ================= -->
+  <h2 class="text-2xl font-semibold text-gray-900 mb-4">Past Courses</h2>
+
+  <% past = @student.enrollments.order(start_date: :desc).offset(1) %>
+
+  <% if past.any? %>
+    <% past.each do |enrollment| %>
+      <div class="rounded-lg border border-gray-200 p-6 mb-6 bg-white shadow-sm">
+        <h3 class="text-xl font-bold text-gray-900">
+          <%= link_to enrollment.course.name, enrollment.course, class: "hover:underline" %>
+        </h3>
+
+        <p class="text-gray-600 mt-1">
+          <strong>Start:</strong> <%= enrollment.start_date&.strftime("%d %b %Y") %><br>
+          <strong>End:</strong> <%= enrollment.end_date&.strftime("%d %b %Y") %><br>
+          <strong>Status:</strong> <%= enrollment.status || "Completed" %>
+        </p>
+
+        <h4 class="mt-4 text-lg font-semibold">Modules</h4>
+
+        <% if enrollment.student_modules.any? %>
+          <ul class="mt-2 space-y-3">
+            <% enrollment.student_modules.includes(:course_module).each do |mod| %>
+              <%= render "module_status_row", course_module: mod.course_module, student_module: mod %>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="text-gray-600">No module history found.</p>
+        <% end %>
+      </div>
     <% end %>
-  </div>
+  <% else %>
+    <p class="text-gray-600">No past courses recorded.</p>
+  <% end %>
 
 </div>

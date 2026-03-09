@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_125135) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_09_133754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,6 +37,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_125135) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "enrollments", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "course_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_enrollments_on_course_id"
+    t.index ["student_id"], name: "index_enrollments_on_student_id"
+  end
+
   create_table "student_modules", force: :cascade do |t|
     t.bigint "student_id", null: false
     t.string "module_name"
@@ -45,7 +57,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_125135) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "course_module_id", null: false
+    t.bigint "enrollment_id", null: false
     t.index ["course_module_id"], name: "index_student_modules_on_course_module_id"
+    t.index ["enrollment_id"], name: "index_student_modules_on_enrollment_id"
     t.index ["student_id"], name: "index_student_modules_on_student_id"
   end
 
@@ -57,14 +71,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_125135) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status"
-    t.bigint "course_id", null: false
-    t.index ["course_id"], name: "index_students_on_course_id"
+    t.string "status", default: "active", null: false
+    t.string "email"
+    t.string "phone"
   end
 
   add_foreign_key "course_module_templates", "courses"
   add_foreign_key "course_modules", "courses"
+  add_foreign_key "enrollments", "courses"
+  add_foreign_key "enrollments", "students"
   add_foreign_key "student_modules", "course_modules"
+  add_foreign_key "student_modules", "enrollments"
   add_foreign_key "student_modules", "students"
-  add_foreign_key "students", "courses"
 end

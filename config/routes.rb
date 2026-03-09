@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :enrollments
   resources :students
   resources :courses
   resources :course_modules      # ← ensure this is here

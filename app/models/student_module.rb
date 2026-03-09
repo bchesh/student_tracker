@@ -1,6 +1,7 @@
 class StudentModule < ApplicationRecord
-  belongs_to :student
-  belongs_to :course_module, optional: true
+  belongs_to :enrollment
+  has_one :student, through: :enrollment
+  has_one :course, through: :enrollment
 
   MODULE_STATUSES = [
     "PASSED",
@@ -8,7 +9,5 @@ class StudentModule < ApplicationRecord
     "CORRECTIONS SENT",
     "NO WORK / NOT COMPLETED",
     "AI DETECTED (SENT TO REDO)"
-  ].freeze
-
-  validates :status, inclusion: { in: MODULE_STATUSES }, allow_nil: true
+  ]
 end

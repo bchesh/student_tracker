@@ -25,7 +25,13 @@
               <div class="font-medium text-gray-900"><%= link_to student.name, student, class: "hover:underline" %></div>
               <div class="text-xs text-gray-500"><%= student.email if student.respond_to?(:email) %></div>
             </td>
-            <td class="px-4 py-3 text-gray-700"><%= student.course.name %></td>
+            <td class="px-4 py-3 text-gray-700">
+              <% if student.courses.any? %>
+                <%= student.courses.map(&:name).join(", ") %>
+              <% else %>
+                <span class="text-gray-400">No courses</span>
+              <% end %>
+            </td>
             <td class="px-4 py-3 text-gray-700"><%= student.start_date&.strftime("%d %b %Y") %></td>
             <td class="px-4 py-3 text-gray-700"><%= student.end_date&.strftime("%d %b %Y") %></td>
             <td class="px-4 py-3">
